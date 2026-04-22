@@ -11,12 +11,6 @@ ps = subprocess.Popen(
     creationflags=subprocess.CREATE_NEW_CONSOLE
 )
 
-
-
-mattergen_path = r""
-venv = r".\.venv\Scripts\activate"
-commandPrompt = "cd " + mattergen_path + "; " + venv
-
 root = tk.Tk()
 root.title("MatterGen-App")
 root.geometry("800x600")
