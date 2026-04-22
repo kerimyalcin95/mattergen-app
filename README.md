@@ -37,3 +37,7 @@ Pre-Packages must be installed before installing ``mattergen``:
 Install ``mattergen``:
 
 ``uv pip install -e . --no-build-isolation``
+
+Create a folder named ``tmp`` in ```C:\``
+
+_Info: ``MatterGen`` is developed to run on Linux, so a ``tmp`` folder is required, otherwise it fails when saving the generated ``.cif`` files to disk. This folder location cannot be changed with ``Hydra`` configuration files, as the path is hardcoded._
