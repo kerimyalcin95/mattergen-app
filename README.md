@@ -4,7 +4,7 @@ MatterGen-App is a Tkinter-based interface for running MatterGen tasks, develope
 
 ## Install on Windows
 
-Certain preparations must be made when installing on Windows compared to Linux, as some nuances need to be considered.
+Certain preparations must be made when installing on Windows compared to Linux.
 
 Download and install [C++ Build tools](https://aka.ms/vs/stable/vs_BuildTools.exe) and select _Desktop development with C++_.
 
