@@ -31,15 +31,15 @@ label.pack()
 
 # Run mattergen CLI prompt
 def shellProc():
-    ps.stdin.write(r'cd "' + config["work-path-linux"] + '"' + "\n")
-    ps.stdin.write(r'.\.venv\Scripts\activate' + "\n")
-    ps.stdin.write(r'mattergen-generate "' + config["result-path"] + '" --pretrained-name=mattergen_base --batch_size=' + str(config["batch-size"]) +  r' --num_batches=' + str(config["num-batches"]) + "\n")
-    ps.stdin.flush()
+    sys.stdin.write(r'cd "' + config["work-path-linux"] + '"' + "\n")
+    sys.stdin.write(r'.\.venv\Scripts\activate' + "\n")
+    sys.stdin.write(r'mattergen-generate "' + config["result-path"] + '" --pretrained-name=mattergen_base --batch_size=' + str(config["batch-size"]) +  r' --num_batches=' + str(config["num-batches"]) + "\n")
+    sys.stdin.flush()
 
 # Closing the window kills all processes immediately
 def on_close():
     try:
-        subprocess.run(f"taskkill /F /T /PID {ps.pid}", shell=True)
+        subprocess.run(f"taskkill /F /T /PID {sys.pid}", shell=True)
     except Exception:
         pass
     root.destroy()
