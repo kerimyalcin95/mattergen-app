@@ -38,7 +38,7 @@ After installing start WSL using:
 Install [VSCode](https://code.visualstudio.com/) and the [Remote Development](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.vscode-remote-extensionpack) extension.
 
 On WSL update the distro using and install ``wget`` and ``ca-certificates``:  
-``sudo apt-get update``
+``sudo apt-get update``  
 ``sudo apt-get install wget ca-certificates``
 
 Run ``. code`` to open a session in VSCode.
