@@ -21,28 +21,23 @@ You need WSL (Windows Subsystem for Linux) in order to run properly. Please refe
 
 ### WSL setup
 
-You can install WSL using:
-
+You can install WSL using:  
 ``wsl --install``
 
-After rebooting the system list the available distros you can choose from:
-
+After rebooting the system list the available distros you can choose from:  
 ``wsl --list --online``
 
-Install a preferred Linux distro (e.g. Debian):
-
+Install a preferred Linux distro (e.g. Debian):  
 ``wsl --install Debian``
 
-After installing start WSL using:
-
+After installing start WSL using:  
 ``wsl -d Debian``
 
 ### Setup VSCode on WSL (Debian)
 
 Install [VSCode](https://code.visualstudio.com/) and the [Remote Development](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.vscode-remote-extensionpack) extension.
 
-On WSL update the distro using and install ``wget`` and ``ca-certificates``:
-
+On WSL update the distro using and install ``wget`` and ``ca-certificates``:  
 ``sudo apt-get update``
 ``sudo apt-get install wget ca-certificates``
 
@@ -54,49 +49,44 @@ Refer to this [link](https://learn.microsoft.com/en-us/windows/wsl/tutorials/wsl
 
 ### Setup Git on WSL (Debian)
 
-On WSL install ``git`` using:
-
+On WSL install ``git`` using:  
 ``sudo apt-get install git``
 
-Setup ``git``:
-
-``git config --global user.name "Your Name"``
+Setup ``git``:  
+``git config --global user.name "Your Name"``  
 ``git config --global user.email "youremail@domain.com"``
 
 In the command palette in VSCode which can be accessed using ``Ctrl+Shift+P`` clone the git repository
-using the command ``Git: Clone`` and provide following URL:
-
+using the command ``Git: Clone`` and provide following URL:  
 ``https://github.com/kerimyalcin95/mattergen-app.git``
 
 ### Install required pre-packages (Debian)
 
-Install the newest version of ``Python`` environment:
-
+Install the newest version of ``Python`` environment:  
 ``sudo apt-get install python3 python3-tk pip``
 
 ### Install MatterGen (Debian)
 
-Download ``MatterGen`` version 1.0.3:
-
+Download ``MatterGen`` version 1.0.3:  
 ``wget https://github.com/microsoft/mattergen/archive/refs/tags/v1.0.3.zip``
 
-Unzip the file:
-
+Unzip the file:  
 ``unzip v1.0.3.zip``
 
-Install ``uv`` package manager:
-
-``curl -Ls https://astral.sh/uv/install.sh -o install.sh``
-``sh install.sh``
-``echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc``
-``source ~/.bashrc``
+Install ``uv`` package manager:  
+``curl -Ls https://astral.sh/uv/install.sh -o install.sh``  
+``sh install.sh``  
+``echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc``  
+``source ~/.bashrc``  
 
 Inside the ``mattergen-1.0.3`` folder create a virtual Python 3.10 environment
-to install ``MatterGen``:
+to install ``MatterGen``:  
+``uv venv .venv --python 3.10``  
+``source .venv/bin/activate``  
+``uv pip install -e .``  
 
-``uv venv .venv --python 3.10``
-``source .venv/bin/activate``
-``uv pip install -e .``
+You have to install an older version of ``setuptools``, otherwise execution fails:  
+``uv pip install --force-reinstall --no-cache-dir setuptools==75.8.0``
 
 ## Install on Windows (experimental)
 
