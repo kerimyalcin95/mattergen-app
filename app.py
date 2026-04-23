@@ -1,4 +1,6 @@
 import tkinter as tk
+import threading
+import signal
 import subprocess
 import sys
 import os
@@ -30,28 +32,35 @@ with open(CONFIG_PATH, "r") as f:
 label = tk.Label(root, text="mattergen-generate")
 label.pack()
 
-matter_generate_cmd = r'mattergen-generate "' + config["result-path"] + '" --pretrained-name=mattergen_base --batch_size=' + str(config["batch-size"]) +  r' --num_batches=' + str(config["num-batches"])
-
-cmd = """
+cmd = f"""
 source /home/agx/mattergen-1.0.3/.venv/bin/activate &&
-mattergen-generate /home/agx/output \
+mattergen-generate {config["result-path"]} \
 --pretrained-name=mattergen_base \
---batch_size=4 \
---num_batches=2
+--batch_size={config["batch-size"]} \
+--num_batches={config["num-batches"]}
 """
-
-subprocess.run(["bash", "-c", cmd])
 
 # Run mattergen CLI prompt
 def shellProc():
-    os.chdir(config["work-path-linux"])
-    print("Changed working directory to: " + os.getcwd())
-    os.system("./.venv/bin/" + matter_generate_cmd)
+    subprocess.run(["bash", "-c", cmd])
 
-# Closing the window kills all processes immediately
+def start_thread():
+    print("Starting thread.")
+    thread = threading.Thread(target=shellProc)
+    thread.start()
+
+# Kills the entire process when closing window
+def on_close():
+    try:
+        os.killpg(0, signal.SIGTERM)
+    except Exception:
+        pass
+
+    root.destroy()
 
 button = tk.Button(root, text="Run")
-button.config(command=shellProc)
+button.config(command=start_thread)
 button.pack()
 
+root.protocol("WM_DELETE_WINDOW", on_close)
 root.mainloop()
