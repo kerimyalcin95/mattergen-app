@@ -1,5 +1,10 @@
+import tkinter as tk
+import subprocess
+from pathlib import Path
+import json
 
-def main_win32():
+
+def main_windows():
     print("Running on Windows (experimental)")
 
     ps = subprocess.Popen(
@@ -26,7 +31,7 @@ def main_win32():
 
     # Run mattergen CLI prompt
     def shellProc():
-        ps.stdin.write(r'cd "' + config["work-path"] + '"' + "\n")
+        ps.stdin.write(r'cd "' + config["work-path-windows"] + '"' + "\n")
         ps.stdin.write(r'.\.venv\Scripts\activate' + "\n")
         ps.stdin.write(r'mattergen-generate "' + config["result-path"] + '" --pretrained-name=mattergen_base --batch_size=' + str(config["batch-size"]) +  r' --num_batches=' + str(config["num-batches"]) + "\n")
         ps.stdin.flush()

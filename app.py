@@ -1,14 +1,14 @@
-import win32
-
 import tkinter as tk
 import subprocess
 import sys
 from pathlib import Path
 import json
 
+from app_windows import main_windows
+
 if sys.platform == "win32":
     # experimental
-    main_win32()
+    main_windows()
 elif sys.platform == "linux":
     print("Running on Linux distribution.")
 else:
@@ -31,7 +31,7 @@ label.pack()
 
 # Run mattergen CLI prompt
 def shellProc():
-    ps.stdin.write(r'cd "' + config["work-path"] + '"' + "\n")
+    ps.stdin.write(r'cd "' + config["work-path-linux"] + '"' + "\n")
     ps.stdin.write(r'.\.venv\Scripts\activate' + "\n")
     ps.stdin.write(r'mattergen-generate "' + config["result-path"] + '" --pretrained-name=mattergen_base --batch_size=' + str(config["batch-size"]) +  r' --num_batches=' + str(config["num-batches"]) + "\n")
     ps.stdin.flush()
