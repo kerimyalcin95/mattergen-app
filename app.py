@@ -1,11 +1,14 @@
 import tkinter as tk
 import subprocess
-import signal
-import os
+import sys
 from pathlib import Path
 import json
 
-
+if sys.platform == "win32":
+    subprocess.Popen(cmd, creationflags=subprocess.CREATE_NEW_CONSOLE)
+else:
+    print("Current platform:" + sys.platform)
+    print("OS not supported.")
 
 ps = subprocess.Popen(
     ["powershell", "-NoExit"],
