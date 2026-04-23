@@ -1,6 +1,7 @@
 import tkinter as tk
 import subprocess
 import sys
+import os
 from pathlib import Path
 import json
 
@@ -29,24 +30,28 @@ with open(CONFIG_PATH, "r") as f:
 label = tk.Label(root, text="mattergen-generate")
 label.pack()
 
+matter_generate_cmd = r'mattergen-generate "' + config["result-path"] + '" --pretrained-name=mattergen_base --batch_size=' + str(config["batch-size"]) +  r' --num_batches=' + str(config["num-batches"])
+
+cmd = """
+source /home/agx/mattergen-1.0.3/.venv/bin/activate &&
+mattergen-generate /home/agx/output \
+--pretrained-name=mattergen_base \
+--batch_size=4 \
+--num_batches=2
+"""
+
+subprocess.run(["bash", "-c", cmd])
+
 # Run mattergen CLI prompt
 def shellProc():
-    sys.stdin.write(r'cd "' + config["work-path-linux"] + '"' + "\n")
-    sys.stdin.write(r'.\.venv\Scripts\activate' + "\n")
-    sys.stdin.write(r'mattergen-generate "' + config["result-path"] + '" --pretrained-name=mattergen_base --batch_size=' + str(config["batch-size"]) +  r' --num_batches=' + str(config["num-batches"]) + "\n")
-    sys.stdin.flush()
+    os.chdir(config["work-path-linux"])
+    print("Changed working directory to: " + os.getcwd())
+    os.system("./.venv/bin/" + matter_generate_cmd)
 
 # Closing the window kills all processes immediately
-def on_close():
-    try:
-        subprocess.run(f"taskkill /F /T /PID {sys.pid}", shell=True)
-    except Exception:
-        pass
-    root.destroy()
 
 button = tk.Button(root, text="Run")
 button.config(command=shellProc)
 button.pack()
 
-root.protocol("WM_DELETE_WINDOW", on_close)
 root.mainloop()

@@ -11,6 +11,7 @@ MatterGen-App is a Tkinter-based interface for running MatterGen tasks, develope
     - [Setup VSCode on WSL (Debian)](#setup-vscode-on-wsl-debian)
     - [Setup Git on WSL (Debian)](#setup-git-on-wsl-debian)
     - [Install required pre-packages (Debian)](#install-required-pre-packages-debian)
+    - [Install MatterGen (Debian)](#install-mattergen-debian)
   - [Install on Windows (experimental)](#install-on-windows-experimental)
 
 ## Install on Windows with WSL (recommended)
@@ -69,11 +70,33 @@ using the command ``Git: Clone`` and provide following URL:
 
 ### Install required pre-packages (Debian)
 
-Install the newest version of ``Python`` with tk-bindings:
+Install the newest version of ``Python`` environment:
 
-``sudo apt-get install python3 python3-tk``
+``sudo apt-get install python3 python3-tk pip``
 
-Install the 
+### Install MatterGen (Debian)
+
+Download ``MatterGen`` version 1.0.3:
+
+``wget https://github.com/microsoft/mattergen/archive/refs/tags/v1.0.3.zip``
+
+Unzip the file:
+
+``unzip v1.0.3.zip``
+
+Install ``uv`` package manager:
+
+``curl -Ls https://astral.sh/uv/install.sh -o install.sh``
+``sh install.sh``
+``echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc``
+``source ~/.bashrc``
+
+Inside the ``mattergen-1.0.3`` folder create a virtual Python 3.10 environment
+to install ``MatterGen``:
+
+``uv venv .venv --python 3.10``
+``source .venv/bin/activate``
+``uv pip install -e .``
 
 ## Install on Windows (experimental)
 
