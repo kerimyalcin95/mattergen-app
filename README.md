@@ -16,7 +16,7 @@ Inside following must be selected:
 - MSBuild
 - Clang tools
 
-Download v1.0.3 [source code](https://github.com/microsoft/mattergen/archive/refs/tags/v1.0.3.zip) and extract it.
+Download MatterGen v1.0.3 [source code](https://github.com/microsoft/mattergen/archive/refs/tags/v1.0.3.zip) and extract it.
 
 Install ``uv`` package manager:
 
