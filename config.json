@@ -1,5 +1,5 @@
 {
-    "app-geometry": "300x532+675+121",
+    "app-geometry": "326x700+811+167",
     "work-path-windows": "C:/Users/agx/LRZ Sync+Share/MatterGen-App/mattergen-master/mattergen-1.0.3",
     "work-path-linux": "/home/agx/mattergen-1.0.3",
     "result-path": "/home/agx/mattergen-app/results",
@@ -16,25 +16,35 @@
         "dft_mag_density_hhi_score",
         "chemical_system_energy_above_hull"
     ],
-    "internal-model-selected": "mattergen_base",
-    "dft_mag_density": 0,
+    "internal-model-selected": "chemical_system",
+    "dft_mag_density": "1",
     "dft_bulk_modulus": 200,
     "dft_shear_modulus": 50,
-    "energy_above_hull": 0,
-    "space_group": 225,
-    "hhi_score": 2500,
-    "ml_bulk_modulus": 200,
-    "chemical_system": "Ga-As-Al",
-    "dft-band-gap": 1.2,
+    "energy_above_hull": "0.1",
+    "space_group": "201",
+    "hhi_score": "2550",
+    "ml_bulk_modulus": "220",
+    "chemical_system": "Ga-As-Al-Cs",
+    "dft_band_gap": "2.3",
     "diffusion_guidance_factor": 2.0,
     "model-conditions": {
         "mattergen_base": [],
         "mp_20_base": [],
-        "chemical_system": "chemical_system",
-        "space_group": "space_group",
-        "dft_mag_density": "dft_mag_density",
-        "dft_band_gap": "dft_band_gap",
-        "ml_bulk_modulus": "ml_bulk_modulus",
+        "chemical_system": [
+            "chemical_system"
+        ],
+        "space_group": [
+            "space_group"
+        ],
+        "dft_mag_density": [
+            "dft_mag_density"
+        ],
+        "dft_band_gap": [
+            "dft_band_gap"
+        ],
+        "ml_bulk_modulus": [
+            "ml_bulk_modulus"
+        ],
         "dft_mag_density_hhi_score": [
             "dft_mag_density",
             "hhi_score"

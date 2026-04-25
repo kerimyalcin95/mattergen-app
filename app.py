@@ -24,8 +24,35 @@ class App:
         self.tkVar_work_path = None
         self.tkVar_result_path = None
         self.tkVar_options_selected_model = None
+        self.tkVar_diffusion_guidance_factor = None
         self.tkVar_num_batches = None
         self.tkVar_batch_size = None
+
+        self.tkLabel_work_path = None
+        self.tkButton_work_path = None
+        self.tkEntry_work_path = None
+        self.tkLabel_result_path = None
+        self.tkButton_result_path = None
+        self.tkEntry_result_path = None
+        self.tkLabel_internal_models = None
+        self.tkDropDownMenu_internalModels = None
+        self.tkLabel_diffusion_guidance_factor = None
+        self.tkEntry_diffusion_guidance_factor = None
+        self.tkLabel_num_batches = None
+        self.tkEntry_num_batches = None
+        self.tkLabel_batch_size = None
+        self.tkEntry_batch_size = None
+        self.tkLabel_Process = None
+        self.tkButton_Run = None
+        self.tkButton_Stop = None
+
+        self.tkLabelArray_property = []
+        self.tkEntryArray_property = []
+        self.tkVarArray_property = []
+        
+        self.number_of_avail_model_properties = 0
+        self.has_avail_model_properties = False
+        self.properties = None
 
         self.process = None
         self.thread = None
@@ -56,11 +83,17 @@ class App:
         def validate_positive_int(value):
             return value.isdigit() or value == ""
         
+        def validate_positive_float(value):
+            try:
+                return float(value) > 0
+            except ValueError:
+                return False
+        
 
         self.tkVar_work_path = tk.StringVar()
         self.tkVar_work_path.set(self.config["work-path-linux"])
-        tkLabel_work_path = tk.Label(self.root, text="Path of the work directory:", anchor="w")
-        tkLabel_work_path.pack(fill="x", padx=10, pady=(30, 0))
+        self.tkLabel_work_path = tk.Label(self.root, text="Path of the work directory:", anchor="w")
+        self.tkLabel_work_path.pack(fill="x", padx=10, pady=(30, 0))
 
         self.tkEntry_work_path = tk.Entry(
             self.root,
@@ -68,15 +101,15 @@ class App:
         self.tkEntry_work_path.bind("<KeyRelease>", self.tkEntry_work_path_on_keyrelease)
         self.tkEntry_work_path.pack(fill="x", padx=10, pady=(0,2))
 
-        tkButton_work_path = tk.Button(self.root, text="Browse")
-        tkButton_work_path.config(command=self.tkButton_work_path_command)
-        tkButton_work_path.pack(fill="x", padx=10, pady=(0,0))
+        self.tkButton_work_path = tk.Button(self.root, text="Browse")
+        self.tkButton_work_path.config(command=self.tkButton_work_path_command)
+        self.tkButton_work_path.pack(fill="x", padx=10, pady=(0,0))
 
 
         self.tkVar_result_path = tk.StringVar()
         self.tkVar_result_path.set(self.config["result-path"])
-        tkLabel_result_path = tk.Label(self.root, text="Path of the result directory:", anchor="w")
-        tkLabel_result_path.pack(fill="x", padx=10, pady=(10, 0))
+        self.tkLabel_result_path = tk.Label(self.root, text="Path of the result directory:", anchor="w")
+        self.tkLabel_result_path.pack(fill="x", padx=10, pady=(10, 0))
 
         self.tkEntry_result_path = tk.Entry(
             self.root,
@@ -84,29 +117,48 @@ class App:
         self.tkEntry_result_path.bind("<KeyRelease>", self.tkEntry_result_path_on_keyrelease)
         self.tkEntry_result_path.pack(fill="x", padx=10, pady=(0,2))
 
-        tkButton_result_path = tk.Button(self.root, text="Browse")
-        tkButton_result_path.config(command=self.tkButton_result_path_command)
-        tkButton_result_path.pack(fill="x", padx=10, pady=(0,0))
+        self.tkButton_result_path = tk.Button(self.root, text="Browse")
+        self.tkButton_result_path.config(command=self.tkButton_result_path_command)
+        self.tkButton_result_path.pack(fill="x", padx=10, pady=(0,0))
 
-
-        tkLabel_internal_models = tk.Label(self.root, text="Available internal models:", anchor="w")
-        tkLabel_internal_models.pack(fill="x", padx=10, pady=(30, 0))
+        self.tkLabel_internal_models = tk.Label(self.root, text="Available internal models:", anchor="w")
+        self.tkLabel_internal_models.pack(fill="x", padx=10, pady=(30, 0))
 
         options_internal_models = self.config["internal-models"]
         self.tkVar_selected_model = tk.StringVar()
         self.tkVar_selected_model.set(self.config["internal-model-selected"])
-        tkDropDownMenu_internalModels = ttk.Combobox(
+        self.tkDropDownMenu_internalModels = ttk.Combobox(
             self.root,
             textvariable=self.tkVar_selected_model,
             values=options_internal_models,
             state="readonly"
         )
-        tkDropDownMenu_internalModels.pack(fill="x", padx=10, pady=(0,10))
-        tkDropDownMenu_internalModels.bind("<<ComboboxSelected>>", self.tkDropDownMenu_internalModels_on_select)
+        self.tkDropDownMenu_internalModels.pack(fill="x", padx=10, pady=(0,10))
+        self.tkDropDownMenu_internalModels.bind("<<ComboboxSelected>>", self.tkDropDownMenu_internalModels_on_select)
 
+        # Properties to conditions on
+        self.tkLabel_diffusion_guidance_factor = tk.Label(self.root, text="diffusion_guidance_factor:", anchor="w")
 
-        tkLabel_num_batches = tk.Label(self.root, text="Number of batches:", anchor="w")
-        tkLabel_num_batches.pack(fill="x", padx=10, pady=(10,0))
+        self.tkVar_diffusion_guidance_factor = tk.StringVar()
+        self.tkVar_diffusion_guidance_factor.set(self.config["diffusion_guidance_factor"])
+        self.tkVar_diffusion_guidance_factor.trace_add("write", self.tkEntry_diffusion_guidance_factor_callback)
+
+        self.tkEntry_diffusion_guidance_factor = tk.Entry(
+        self.root,
+            textvariable=self.tkVar_diffusion_guidance_factor,
+            #validate="key",
+            #validatecommand=(self.root.register(validate_positive_float), "%P")
+            )
+        self.tkEntry_diffusion_guidance_factor.bind("<KeyRelease>", self.tkEntry_diffusion_guidance_factor_on_keyrelease)
+
+        self.update_available_number_of_model_properties()
+
+        self.update_diffusion_guidance_factor_gui_visibility()
+        self.update_properties_to_condition_on_gui_visibility()
+
+        # Basic sampling parameters
+        self.tkLabel_num_batches = tk.Label(self.root, text="Number of batches:", anchor="w")
+        self.tkLabel_num_batches.pack(fill="x", padx=10, pady=(0,0))
 
         self.tkVar_num_batches = tk.StringVar()
         self.tkVar_num_batches.set(self.config["num-batches"])
@@ -121,8 +173,8 @@ class App:
         self.tkEntry_num_batches.pack(fill="x", padx=10, pady=(0,10))
 
 
-        tkLabel_batch_size = tk.Label(self.root, text="Batch size:", anchor="w")
-        tkLabel_batch_size.pack(fill="x", padx=10, pady=(0,0))
+        self.tkLabel_batch_size = tk.Label(self.root, text="Batch size:", anchor="w")
+        self.tkLabel_batch_size.pack(fill="x", padx=10, pady=(0,0))
 
         self.tkVar_batch_size = tk.StringVar()
         self.tkVar_batch_size.set(self.config["batch-size"])
@@ -135,18 +187,19 @@ class App:
             validatecommand=(self.root.register(validate_positive_int), "%P"))
         self.tkEntry_batch_size.bind("<KeyRelease>", self.tkEntry_batch_size_on_keyrelease)
         self.tkEntry_batch_size.pack(fill="x", padx=10, pady=(0,10))
-        
 
-        tkLabel_Process = tk.Label(self.root, text="Run/Stop the process:", anchor="w")
-        tkLabel_Process.pack(fill="x", padx=10, pady=(30,5))
+        # Run/Start buttons
+        self.tkLabel_Process = tk.Label(self.root, text="Run/Stop the process:", anchor="w")
+        self.tkLabel_Process.pack(fill="x", padx=10, pady=(30,5))
 
-        tkButton_Run = tk.Button(self.root, text="RUN")
-        tkButton_Run.config(command=self.start_thread)
-        tkButton_Run.pack(fill="x", padx=10, pady=(0,0))
+        self.tkButton_Run = tk.Button(self.root, text="RUN")
+        self.tkButton_Run.config(command=self.start_thread)
+        self.tkButton_Run.pack(fill="x", padx=10, pady=(0,0))
 
-        tkButton_Stop = tk.Button(self.root, text="STOP")
-        tkButton_Stop.config(command=self.stop_shell_process)
-        tkButton_Stop.pack(fill="x", padx=10, pady=(5,10))
+        self.tkButton_Stop = tk.Button(self.root, text="STOP")
+        self.tkButton_Stop.config(command=self.stop_shell_process)
+        self.tkButton_Stop.pack(fill="x", padx=10, pady=(5,10))
+
 
         self.root.protocol("WM_DELETE_WINDOW", self.on_close)
         self.root.mainloop()
@@ -161,6 +214,9 @@ class App:
         self.generate_command += f"""--pretrained-name={self.config["internal-model-selected"]} """
         self.generate_command += f"""--batch_size={self.config["batch-size"]} """
         self.generate_command += f"""--num_batches={self.config["num-batches"]} """
+
+        if self.has_avail_model_properties:
+            self.generate_command += f"""--diffusion_guidance_factor={self.config["diffusion_guidance_factor"]} """
 
         print(self.generate_command)
 
@@ -203,9 +259,65 @@ class App:
 
         self.root.destroy()
 
+    def update_available_number_of_model_properties(self):
+        self.number_of_avail_model_properties = len(self.config["model-conditions"][self.tkVar_selected_model.get()])
+
+        if self.number_of_avail_model_properties > 0:
+            self.has_avail_model_properties = True
+        else:
+            self.has_avail_model_properties = False
+
+    def update_properties_to_condition_on_gui_visibility(self):
+        for w in self.tkLabelArray_property:
+            w.destroy()
+        self.tkLabelArray_property.clear()
+
+        for w in self.tkEntryArray_property:
+            w.destroy()
+        self.tkEntryArray_property.clear()
+        self.tkVarArray_property.clear()
+
+        if self.has_avail_model_properties:
+            self.properties = self.config["model-conditions"][self.tkVar_selected_model.get()]
+
+            for i in range(self.number_of_avail_model_properties):
+                self.tkLabelArray_property.append(tk.Label(self.root, text=self.properties[i]+":", anchor="w"))
+
+                self.tkVarArray_property.append(tk.StringVar())
+                self.tkVarArray_property[i].set(self.config[self.properties[i]])
+                self.tkVarArray_property[i].trace_add(
+                    "write",
+                    lambda *args, i=i: self.tkEntryArray_property_callback(i, *args)
+                )
+                self.tkEntryArray_property.append(tk.Entry(
+                    self.root,
+                    textvariable=self.tkVarArray_property[i]
+                ))
+                self.tkEntryArray_property[i].bind("<KeyRelease>", self.tkEntryArray_property_on_keyrelease)
+
+            self.tkLabelArray_property[0].pack(after=self.tkEntry_diffusion_guidance_factor, fill="x", padx=10, pady=(5,0))
+            self.tkEntryArray_property[0].pack(after=self.tkLabelArray_property[0], fill="x", padx=10, pady=(0,10))
+
+            for i in range(self.number_of_avail_model_properties-1):
+                self.tkLabelArray_property[i+1].pack(after=self.tkEntryArray_property[i], fill="x", padx=10, pady=(5,0))
+                self.tkEntryArray_property[i+1].pack(after=self.tkLabelArray_property[i+1], fill="x", padx=10, pady=(0,10))
+
+    def update_diffusion_guidance_factor_gui_visibility(self):
+        if self.has_avail_model_properties:
+            self.tkLabel_diffusion_guidance_factor.pack(after=self.tkDropDownMenu_internalModels, fill="x", padx=10, pady=(5,0))
+            self.tkEntry_diffusion_guidance_factor.pack(after=self.tkLabel_diffusion_guidance_factor, fill="x", padx=10, pady=(0,10))
+        else:
+            self.tkLabel_diffusion_guidance_factor.pack_forget()
+            self.tkEntry_diffusion_guidance_factor.pack_forget()
+
+
     def tkDropDownMenu_internalModels_on_select(self, event):
         self.config["internal-model-selected"] = self.tkVar_selected_model.get()
         self.save_config()
+
+        self.update_available_number_of_model_properties()
+        self.update_diffusion_guidance_factor_gui_visibility()
+        self.update_properties_to_condition_on_gui_visibility()
 
     def tkEntry_work_path_on_keyrelease(self, event):
         self.config["work-path-linux"] = self.tkVar_work_path.get()
@@ -233,6 +345,27 @@ class App:
             self.tkVar_result_path.set((self.tkVar_work_path.get() + "/results"))
         
         self.config["result-path"] = self.tkVar_result_path.get()
+        self.save_config()
+
+    def tkEntry_diffusion_guidance_factor_on_keyrelease(self, event):
+        self.save_config()
+
+    def tkEntry_diffusion_guidance_factor_callback(self, *args):
+            value = self.tkVar_diffusion_guidance_factor.get()
+
+            try: 
+                if float(value) > 0:
+                    self.config["diffusion_guidance_factor"] = float(value)
+            except ValueError:
+                self.config["diffusion_guidance_factor"] = 1.0
+
+            self.save_config
+
+    def tkEntryArray_property_callback(self, i, *args):
+        self.config[self.properties[i]] = self.tkVarArray_property[i].get()
+        self.save_config()
+
+    def tkEntryArray_property_on_keyrelease(self, event):
         self.save_config()
 
     def tkEntry_num_batches_on_keyrelease(self, event):
