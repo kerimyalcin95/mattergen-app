@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
+from tkinter import filedialog
 
 import threading
 import signal
@@ -20,6 +21,8 @@ class App:
         self.BASE_DIR = None
         self.CONFIG_PATH = None
 
+        self.tkVar_work_path = None
+        self.tkVar_result_path = None
         self.tkVar_options_selected_model = None
         self.tkVar_num_batches = None
         self.tkVar_batch_size = None
@@ -28,9 +31,18 @@ class App:
         self.thread = None
 
     def run(self):
+
+        # Load config file
+        self.BASE_DIR = Path(__file__).resolve().parent 
+        self.CONFIG_PATH = self.BASE_DIR.parent / "mattergen-app" / "config.json"
+
+        with open(self.CONFIG_PATH, "r") as f:
+            self.config = json.load(f)
+
+        # Initialize window geometry
         self.root = tk.Tk()
         self.root.title("MatterGen-App")
-        self.root.geometry("300x600")
+        self.root.geometry(self.config["app-geometry"])
 
         if sys.platform == "win32":
         # experimental
@@ -41,19 +53,44 @@ class App:
             print("Current platform: " + sys.platform)
             print("OS not supported.")
 
-        # Load config file
-        self.BASE_DIR = Path(__file__).resolve().parent 
-        self.CONFIG_PATH = self.BASE_DIR.parent / "mattergen-app" / "config.json"
-
-        with open(self.CONFIG_PATH, "r") as f:
-            self.config = json.load(f)
-
         def validate_positive_int(value):
             return value.isdigit() or value == ""
+        
+
+        self.tkVar_work_path = tk.StringVar()
+        self.tkVar_work_path.set(self.config["work-path-linux"])
+        tkLabel_work_path = tk.Label(self.root, text="Path of the work directory:", anchor="w")
+        tkLabel_work_path.pack(fill="x", padx=10, pady=(30, 0))
+
+        self.tkEntry_work_path = tk.Entry(
+            self.root,
+            textvariable=self.tkVar_work_path)
+        self.tkEntry_work_path.bind("<KeyRelease>", self.tkEntry_work_path_on_keyrelease)
+        self.tkEntry_work_path.pack(fill="x", padx=10, pady=(0,2))
+
+        tkButton_work_path = tk.Button(self.root, text="Browse")
+        tkButton_work_path.config(command=self.tkButton_work_path_command)
+        tkButton_work_path.pack(fill="x", padx=10, pady=(0,0))
+
+
+        self.tkVar_result_path = tk.StringVar()
+        self.tkVar_result_path.set(self.config["result-path"])
+        tkLabel_result_path = tk.Label(self.root, text="Path of the result directory:", anchor="w")
+        tkLabel_result_path.pack(fill="x", padx=10, pady=(10, 0))
+
+        self.tkEntry_result_path = tk.Entry(
+            self.root,
+            textvariable=self.tkVar_result_path)
+        self.tkEntry_result_path.bind("<KeyRelease>", self.tkEntry_result_path_on_keyrelease)
+        self.tkEntry_result_path.pack(fill="x", padx=10, pady=(0,2))
+
+        tkButton_result_path = tk.Button(self.root, text="Browse")
+        tkButton_result_path.config(command=self.tkButton_result_path_command)
+        tkButton_result_path.pack(fill="x", padx=10, pady=(0,0))
 
 
         tkLabel_internal_models = tk.Label(self.root, text="Available internal models:", anchor="w")
-        tkLabel_internal_models.pack(fill="x", padx=10, pady=(50, 0))
+        tkLabel_internal_models.pack(fill="x", padx=10, pady=(30, 0))
 
         options_internal_models = self.config["internal-models"]
         self.tkVar_selected_model = tk.StringVar()
@@ -101,7 +138,7 @@ class App:
         
 
         tkLabel_Process = tk.Label(self.root, text="Run/Stop the process:", anchor="w")
-        tkLabel_Process.pack(fill="x", padx=10, pady=(10,5))
+        tkLabel_Process.pack(fill="x", padx=10, pady=(30,5))
 
         tkButton_Run = tk.Button(self.root, text="RUN")
         tkButton_Run.config(command=self.start_thread)
@@ -119,7 +156,7 @@ class App:
             json.dump(self.config, f, indent=4)
 
     def create_command(self):
-        self.generate_command = f"""source /home/agx/mattergen-1.0.3/.venv/bin/activate && """
+        self.generate_command = f"""source {'' if self.config["work-path-linux"]=='/' else self.config["work-path-linux"] }/.venv/bin/activate && """
         self.generate_command += f"""mattergen-generate {self.config["result-path"]} """
         self.generate_command += f"""--pretrained-name={self.config["internal-model-selected"]} """
         self.generate_command += f"""--batch_size={self.config["batch-size"]} """
@@ -152,8 +189,13 @@ class App:
             )
             self.thread.start()
 
-    # Kills the entire process when closing window
+    # Safe window geometry (size, position) and kill the app
     def on_close(self):
+        self.config["app-geometry"] = self.root.geometry()
+        self.save_config()
+
+        print("Exiting app.")
+        # Hard kill in case process got stuck
         try:
             os.killpg(0, signal.SIGTERM)
         except Exception:
@@ -163,6 +205,34 @@ class App:
 
     def tkDropDownMenu_internalModels_on_select(self, event):
         self.config["internal-model-selected"] = self.tkVar_selected_model.get()
+        self.save_config()
+
+    def tkEntry_work_path_on_keyrelease(self, event):
+        self.config["work-path-linux"] = self.tkVar_work_path.get()
+        self.save_config()
+
+    def tkButton_work_path_command(self, *args):
+        path = filedialog.askdirectory()
+        if path:  
+            self.tkVar_work_path.set(path)
+        else:
+            self.tkVar_work_path.set("/tmp")
+        
+        self.config["work-path-linux"] = self.tkVar_work_path.get()
+        self.save_config()
+
+    def tkEntry_result_path_on_keyrelease(self, event):
+        self.config["result-path"] = self.tkVar_result_path.get()
+        self.save_config()
+
+    def tkButton_result_path_command(self, *args):
+        path = filedialog.askdirectory()
+        if path:  
+            self.tkVar_result_path.set(path)
+        else:
+            self.tkVar_result_path.set((self.tkVar_work_path.get() + "/results"))
+        
+        self.config["result-path"] = self.tkVar_result_path.get()
         self.save_config()
 
     def tkEntry_num_batches_on_keyrelease(self, event):
