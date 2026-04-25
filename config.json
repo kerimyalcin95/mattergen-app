@@ -16,20 +16,32 @@
         "chemical_system_energy_above_hull"
     ],
     "internal-model-selected": "mp_20_base",
-    
-    "mattergen_base": [],
-    "mp_20_base": [],
-    "chemical_system": "chemical_system",
-    "space_group": "space_group",
-    "dft_mag_density": "dft_mag_density",
-    "dft_band_gap": "dft_band_gap",
-    "ml_bulk_modulus": "ml_bulk_modulus",
-    "dft_mag_density_hhi_score": [
-        "dft_mag_density",
-        "hhi_score"
-    ],
-    "chemical_system_energy_above_hull": [
-        "chemical_system",
-        "energy_above_hull"
-    ]
+
+    "dft_mag_density": 0,
+    "dft_bulk_modulus": 200,
+    "dft_shear_modulus": 50,
+    "energy_above_hull": 0,
+    "space_group": 225,
+    "hhi_score": 2500,
+    "ml_bulk_modulus": 200,
+    "chemical_system": "Ga-As-Al",
+    "dft-band-gap": 1.2,
+
+    "model-conditions": {
+        "mattergen_base": [],
+        "mp_20_base": [],
+        "chemical_system": "chemical_system",
+        "space_group": "space_group",
+        "dft_mag_density": "dft_mag_density",
+        "dft_band_gap": "dft_band_gap",
+        "ml_bulk_modulus": "ml_bulk_modulus",
+        "dft_mag_density_hhi_score": [
+            "dft_mag_density",
+            "hhi_score"
+        ],
+        "chemical_system_energy_above_hull": [
+            "chemical_system",
+            "energy_above_hull"
+        ]
+    }
 }
