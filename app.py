@@ -30,7 +30,7 @@ class App:
     def run(self):
         self.root = tk.Tk()
         self.root.title("MatterGen-App")
-        self.root.geometry("800x600")
+        self.root.geometry("300x600")
 
         if sys.platform == "win32":
         # experimental
@@ -52,8 +52,8 @@ class App:
             return value.isdigit() or value == ""
 
 
-        tkLabel_internal_models = tk.Label(self.root, text="Available internal models:")
-        tkLabel_internal_models.pack()
+        tkLabel_internal_models = tk.Label(self.root, text="Available internal models:", anchor="w")
+        tkLabel_internal_models.pack(fill="x", padx=10, pady=(50, 0))
 
         options_internal_models = self.config["internal-models"]
         self.tkVar_selected_model = tk.StringVar()
@@ -64,12 +64,12 @@ class App:
             values=options_internal_models,
             state="readonly"
         )
-        tkDropDownMenu_internalModels.pack()
+        tkDropDownMenu_internalModels.pack(fill="x", padx=10, pady=(0,10))
         tkDropDownMenu_internalModels.bind("<<ComboboxSelected>>", self.tkDropDownMenu_internalModels_on_select)
-        
 
-        tkLabel_num_batches = tk.Label(self.root, text="Number of batches:")
-        tkLabel_num_batches.pack()
+
+        tkLabel_num_batches = tk.Label(self.root, text="Number of batches:", anchor="w")
+        tkLabel_num_batches.pack(fill="x", padx=10, pady=(10,0))
 
         self.tkVar_num_batches = tk.StringVar()
         self.tkVar_num_batches.set(self.config["num-batches"])
@@ -81,11 +81,11 @@ class App:
             validate="key",
             validatecommand=(self.root.register(validate_positive_int), "%P"))
         self.tkEntry_num_batches.bind("<KeyRelease>", self.tkEntry_num_batches_on_keyrelease)
-        self.tkEntry_num_batches.pack()
+        self.tkEntry_num_batches.pack(fill="x", padx=10, pady=(0,10))
 
 
-        tkLabel_batch_size = tk.Label(self.root, text="Batch size:")
-        tkLabel_batch_size.pack()
+        tkLabel_batch_size = tk.Label(self.root, text="Batch size:", anchor="w")
+        tkLabel_batch_size.pack(fill="x", padx=10, pady=(0,0))
 
         self.tkVar_batch_size = tk.StringVar()
         self.tkVar_batch_size.set(self.config["batch-size"])
@@ -97,19 +97,19 @@ class App:
             validate="key",
             validatecommand=(self.root.register(validate_positive_int), "%P"))
         self.tkEntry_batch_size.bind("<KeyRelease>", self.tkEntry_batch_size_on_keyrelease)
-        self.tkEntry_batch_size.pack()
+        self.tkEntry_batch_size.pack(fill="x", padx=10, pady=(0,10))
         
 
-        tkLabel_Process = tk.Label(self.root, text="Generate crystal structures")
-        tkLabel_Process.pack()
+        tkLabel_Process = tk.Label(self.root, text="Run/Stop the process:", anchor="w")
+        tkLabel_Process.pack(fill="x", padx=10, pady=(10,5))
 
         tkButton_Run = tk.Button(self.root, text="RUN")
         tkButton_Run.config(command=self.start_thread)
-        tkButton_Run.pack()
+        tkButton_Run.pack(fill="x", padx=10, pady=(0,0))
 
         tkButton_Stop = tk.Button(self.root, text="STOP")
         tkButton_Stop.config(command=self.stop_shell_process)
-        tkButton_Stop.pack()
+        tkButton_Stop.pack(fill="x", padx=10, pady=(5,10))
 
         self.root.protocol("WM_DELETE_WINDOW", self.on_close)
         self.root.mainloop()
@@ -162,7 +162,7 @@ class App:
         self.root.destroy()
 
     def tkDropDownMenu_internalModels_on_select(self, event):
-        self.config["internal-model-selected"] = self.tkOptions_selected_model.get()
+        self.config["internal-model-selected"] = self.tkVar_selected_model.get()
         self.save_config()
 
     def tkEntry_num_batches_on_keyrelease(self, event):

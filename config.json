@@ -1,9 +1,9 @@
 {
-    "batch-size": 1,
-    "num-batches": 1,
-    "result-path": "result/",
     "work-path-windows": "C:/Users/agx/LRZ Sync+Share/MatterGen-App/mattergen-master/mattergen-1.0.3",
     "work-path-linux": "/home/agx/mattergen-1.0.3",
+    "result-path": "result/",
+    "batch-size": 1,
+    "num-batches": 1,
     "internal-models": [
         "mattergen_base",
         "mp_20_base",
@@ -15,8 +15,7 @@
         "dft_mag_density_hhi_score",
         "chemical_system_energy_above_hull"
     ],
-    "internal-model-selected": "mp_20_base",
-
+    "internal-model-selected": "mattergen_base",
     "dft_mag_density": 0,
     "dft_bulk_modulus": 200,
     "dft_shear_modulus": 50,
@@ -26,7 +25,7 @@
     "ml_bulk_modulus": 200,
     "chemical_system": "Ga-As-Al",
     "dft-band-gap": 1.2,
-
+    "diffusion_guidance_factor": 2.0,
     "model-conditions": {
         "mattergen_base": [],
         "mp_20_base": [],
