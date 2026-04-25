@@ -1,5 +1,5 @@
 {
-    "app-geometry": "326x700+811+167",
+    "app-geometry": "326x710+1328+86",
     "work-path-windows": "C:/Users/agx/LRZ Sync+Share/MatterGen-App/mattergen-master/mattergen-1.0.3",
     "work-path-linux": "/home/agx/mattergen-1.0.3",
     "result-path": "/home/agx/mattergen-app/results",
@@ -16,7 +16,7 @@
         "dft_mag_density_hhi_score",
         "chemical_system_energy_above_hull"
     ],
-    "internal-model-selected": "chemical_system",
+    "internal-model-selected": "chemical_system_energy_above_hull",
     "dft_mag_density": "1",
     "dft_bulk_modulus": 200,
     "dft_shear_modulus": 50,
@@ -24,7 +24,7 @@
     "space_group": "201",
     "hhi_score": "2550",
     "ml_bulk_modulus": "220",
-    "chemical_system": "Ga-As-Al-Cs",
+    "chemical_system": "Ga-As",
     "dft_band_gap": "2.3",
     "diffusion_guidance_factor": 2.0,
     "model-conditions": {

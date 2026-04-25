@@ -216,7 +216,29 @@ class App:
         self.generate_command += f"""--num_batches={self.config["num-batches"]} """
 
         if self.has_avail_model_properties:
+
+            def is_number(s: str) -> bool:
+                try:
+                    float(s)
+                    return True
+                except ValueError:
+                    return False
+
             self.generate_command += f"""--diffusion_guidance_factor={self.config["diffusion_guidance_factor"]} """
+            self.generate_command += f"""--properties_to_condition_on="""
+            self.generate_command += "\"{"
+
+            for i in range(self.number_of_avail_model_properties):
+                if i > 0:
+                    self.generate_command += ","
+
+                self.generate_command += ("\'" + self.properties[i] + "\':")
+                if is_number(self.config[self.properties[i]]):
+                    self.generate_command += self.config[self.properties[i]]
+                else:
+                    self.generate_command += ("\'" + self.config[self.properties[i]] + "\'")
+
+            self.generate_command += "}\""
 
         print(self.generate_command)
 
