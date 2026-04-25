@@ -15,5 +15,21 @@
         "dft_mag_density_hhi_score",
         "chemical_system_energy_above_hull"
     ],
-    "internal-model-selected": "space_group"
+    "internal-model-selected": "mp_20_base",
+    
+    "mattergen_base": [],
+    "mp_20_base": [],
+    "chemical_system": "chemical_system",
+    "space_group": "space_group",
+    "dft_mag_density": "dft_mag_density",
+    "dft_band_gap": "dft_band_gap",
+    "ml_bulk_modulus": "ml_bulk_modulus",
+    "dft_mag_density_hhi_score": [
+        "dft_mag_density",
+        "hhi_score"
+    ],
+    "chemical_system_energy_above_hull": [
+        "chemical_system",
+        "energy_above_hull"
+    ]
 }
