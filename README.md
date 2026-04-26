@@ -2,6 +2,8 @@
 
 MatterGen-App is a Tkinter-based interface for running MatterGen tasks, developed as a study project at Munich University of Applied Sciences to implement input configuration, execution control, and result display.
 
+![v1.0.0-beta1](assets/v1.0.0.beta1.png)
+
 ## Table of Contents
 
 - [MatterGen-App](#mattergen-app)
