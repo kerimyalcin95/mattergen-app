@@ -10,7 +10,7 @@ import os
 from pathlib import Path
 import json
 
-from app_windows import main_windows
+from app_windows import app_windows
 
 class App:
 
@@ -59,6 +59,19 @@ class App:
 
     def run(self):
 
+        if sys.platform == "win32":
+            # experimental (seems to work just fine)
+            print("Running on Windows (experimental)")
+            self.main()
+        elif sys.platform == "linux":
+            print("Running on Linux distribution.")
+            self.main()
+        else:
+            print("Current platform: " + sys.platform)
+            print("OS not supported.")
+
+    def main(self):
+
         # Load config file
         self.BASE_DIR = Path(__file__).resolve().parent 
         self.CONFIG_PATH = self.BASE_DIR.parent / "mattergen-app" / "config.json"
@@ -71,19 +84,6 @@ class App:
         self.root.title("MatterGen-App")
         self.root.geometry(self.config["app-geometry"])
 
-        if sys.platform == "win32":
-        # experimental
-            print("Running on Windows (experimental)")
-            main_windows()
-        elif sys.platform == "linux":
-            print("Running on Linux distribution.")
-            self.main_linux()
-        else:
-            print("Current platform: " + sys.platform)
-            print("OS not supported.")
-
-    def main_linux(self):
-
         def validate_positive_int(value):
             return value.isdigit() or value == ""
         
@@ -93,9 +93,8 @@ class App:
             except ValueError:
                 return False
         
-
         self.tkVar_work_path = tk.StringVar()
-        self.tkVar_work_path.set(self.config["work-path-linux"])
+        self.tkVar_work_path.set(self.config["work-path"])
         self.tkLabel_work_path = tk.Label(self.root, text="Path of the work directory:", anchor="w")
         self.tkLabel_work_path.pack(fill="x", padx=10, pady=(30, 0))
 
@@ -213,8 +212,15 @@ class App:
             json.dump(self.config, f, indent=4)
 
     def create_command(self):
-        self.generate_command = f"""source {'' if self.config["work-path-linux"]=='/' else self.config["work-path-linux"] }/.venv/bin/activate && """
-        self.generate_command += f"""mattergen-generate {self.config["result-path"]} """
+
+        if sys.platform == "win32":
+            # experimental (seems to work just fine)
+            self.generate_command = f"""cd "{self.config["work-path"]}"; .venv/Scripts/mattergen-generate.exe"""
+            self.generate_command += f""" mattergen-generate --result-path="{self.config["result-path"]}" """
+        elif sys.platform == "linux":
+            self.generate_command = f"""source "{'' if self.config["work-path"]=='/' else self.config["work-path"] }/.venv/bin/activate" && """
+            self.generate_command += f"""mattergen-generate --result-path="{self.config["result-path"]}" """
+
         self.generate_command += f"""--pretrained-name={self.config["internal-model-selected"]} """
         self.generate_command += f"""--batch_size={self.config["batch-size"]} """
         self.generate_command += f"""--num_batches={self.config["num-batches"]} """
@@ -249,14 +255,32 @@ class App:
     # Run mattergen CLI prompt
     def run_shell_process(self, command: str):
         #self.process = subprocess.run(["bash", "-c", command])
-        self.process = subprocess.Popen(["bash", "-c", command])
+
+        if sys.platform == "win32":
+            self.process = subprocess.Popen(["powershell", "-c", command])
+        elif sys.platform == "linux":
+            self.process = subprocess.Popen(["bash", "-c", command])
+        
 
     def stop_shell_process(self):
-        if self.process and self.process.poll() is None:
-            self.process.kill()
-            print("Killed process.")
-        else:
-            print("No process running.")
+
+        if sys.platform == "win32":
+            if self.process and self.process.poll() is None:
+                try:
+                    subprocess.run(f"taskkill /F /T /PID {self.process.pid}", shell=True)
+                    self.process.kill()
+                    
+                    print("Killed process.")
+                except Exception:
+                    pass
+            else:
+                print("No process running.")
+        elif sys.platform == "linux":
+            if self.process and self.process.poll() is None:
+                self.process.kill()
+                print("Killed process.")
+            else:
+                print("No process running.")
 
     def start_thread(self):
         if self.process and self.process.poll() is None:
@@ -277,11 +301,20 @@ class App:
         self.save_config()
 
         print("Exiting app.")
-        # Hard kill in case process got stuck
-        try:
-            os.killpg(0, signal.SIGTERM)
-        except Exception:
-            pass
+
+        if sys.platform == "win32":
+            if self.process and self.process.poll() is None:
+                try:
+                    subprocess.run(f"taskkill /F /T /PID {self.process.pid}", shell=True)
+                    self.process.kill()
+                    
+                    print("Killed process.")
+                except Exception:
+                    pass
+        elif sys.platform == "linux":
+            if self.process and self.process.poll() is None:
+                self.process.kill()
+                print("Killed process.")
 
         self.root.destroy()
 
@@ -346,7 +379,7 @@ class App:
         self.update_properties_to_condition_on_gui_visibility()
 
     def tkEntry_work_path_on_keyrelease(self, event):
-        self.config["work-path-linux"] = self.tkVar_work_path.get()
+        self.config["work-path"] = self.tkVar_work_path.get()
         self.save_config()
 
     def tkButton_work_path_command(self, *args):
@@ -356,7 +389,7 @@ class App:
         else:
             self.tkVar_work_path.set("/tmp")
         
-        self.config["work-path-linux"] = self.tkVar_work_path.get()
+        self.config["work-path"] = self.tkVar_work_path.get()
         self.save_config()
 
     def tkEntry_result_path_on_keyrelease(self, event):
