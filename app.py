@@ -3,14 +3,10 @@ from tkinter import ttk
 from tkinter import filedialog
 
 import threading
-import signal
 import subprocess
 import sys
-import os
 from pathlib import Path
 import json
-
-from app_windows import app_windows
 
 class App:
 
