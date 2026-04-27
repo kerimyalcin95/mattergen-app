@@ -241,10 +241,10 @@ class App:
         if sys.platform == "win32":
             # mattergen-generate.exe has to be called directly from the environment
             self.generate_command = f"""cd "{self.config["work-path-windows"]}"; .venv/Scripts/mattergen-generate.exe"""
-            self.generate_command += f""" mattergen-generate --output-path="{self.config["result-path-windows"]}" """
+            self.generate_command += f""" "{self.config["result-path-windows"]}" """
         elif sys.platform == "linux":
             self.generate_command = f"""source "{'' if self.config["work-path-linux"]=='/' else self.config["work-path-linux"] }/.venv/bin/activate" && """
-            self.generate_command += f"""mattergen-generate --output-path="{self.config["result-path-linux"]}" """
+            self.generate_command += f"""mattergen-generate "{self.config["result-path-linux"]}" """
 
         # command parameter: internal model
         self.generate_command += f"""--pretrained-name={self.config["internal-model-selected"]} """

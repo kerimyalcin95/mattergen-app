@@ -1,9 +1,9 @@
 {
     "app-geometry": "383x657+807+160",
     "work-path-linux": "/home/agx/mattergen-1.0.3",
-    "work-path-windows": "/home/agx/mattergen-1.0.3",
+    "work-path-windows": "C:/Users/agx/LRZ Sync+Share/MatterGen-App/mattergen-master/mattergen-1.0.3",
     "result-path-linux": "/home/agx/mattergen-app/results",
-    "result-path-windows": "/home/agx/mattergen-app/results",
+    "result-path-windows": "C:/Users/agx/LRZ Sync+Share/MatterGen-App/code/mattergen-app/results",
     "batch-size": 4,
     "num-batches": 1,
     "internal-models": [
