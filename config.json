@@ -1,5 +1,5 @@
 {
-    "app-geometry": "326x710+1328+86",
+    "app-geometry": "326x710+1316+156",
     "work-path-windows": "C:/Users/agx/LRZ Sync+Share/MatterGen-App/mattergen-master/mattergen-1.0.3",
     "work-path-linux": "/home/agx/mattergen-1.0.3",
     "result-path": "/home/agx/mattergen-1.0.3/results",
@@ -16,7 +16,7 @@
         "dft_mag_density_hhi_score",
         "chemical_system_energy_above_hull"
     ],
-    "internal-model-selected": "chemical_system_energy_above_hull",
+    "internal-model-selected": "mp_20_base",
     "dft_mag_density": "1",
     "dft_bulk_modulus": 200,
     "dft_shear_modulus": 50,

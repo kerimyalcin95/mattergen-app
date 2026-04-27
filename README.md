@@ -230,7 +230,7 @@ _Warning: The app has to be started inside a terminal otherwise execution of the
 
 ### Path of the work directory
 
-Provide a path where of the mattergen-1.0.3 repository locally installed on your system.
+Provide a path where of the `mattergen-1.0.3` repository locally installed on your system.
 If the dialog is cancelled the text field will be replaced by the directory `\tmp`.
 
 ![work-path](assets/manual/work-path.png)
@@ -260,6 +260,8 @@ _Warning: Results should in the work directory. Misconfiguration may corrupt the
 ### Available internal models
 
 `MatterGen` offers two unconditioned models and seven fine-tuned models to choose from.
+
+![internal model options](assets/manual/available-models.png)
 
 ### Model conditions
 
