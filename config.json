@@ -4,7 +4,7 @@
     "work-path-windows": "C:/Users/agx/LRZ Sync+Share/MatterGen-App/mattergen-master/mattergen-1.0.3",
     "result-path-linux": "/home/agx/mattergen-app/results",
     "result-path-windows": "C:/Users/agx/LRZ Sync+Share/MatterGen-App/code/mattergen-app/results",
-    "batch-size": 4,
+    "batch-size": 1,
     "num-batches": 1,
     "internal-models": [
         "mattergen_base",
@@ -17,7 +17,7 @@
         "dft_mag_density_hhi_score",
         "chemical_system_energy_above_hull"
     ],
-    "internal-model-selected": "chemical_system",
+    "internal-model-selected": "mattergen_base",
     "dft_mag_density": "1",
     "dft_bulk_modulus": 200,
     "dft_shear_modulus": 50,
