@@ -12,13 +12,13 @@ MatterGen-App is a Tkinter-based interface for running MatterGen tasks, develope
     - [Install on Linux (Debian)](#install-on-linux-debian)
       - [Install required pre-packages (Debian)](#install-required-pre-packages-debian)
       - [Install MatterGen (Debian)](#install-mattergen-debian)
-    - [Install on Windows with WSL (recommended)](#install-on-windows-with-wsl-recommended)
+    - [Install on Windows with WSL](#install-on-windows-with-wsl)
       - [WSL setup](#wsl-setup)
       - [Setup VSCode on WSL (Debian)](#setup-vscode-on-wsl-debian)
       - [Setup Git on WSL (Debian)](#setup-git-on-wsl-debian)
-      - [Further setup](#further-setup)
+      - [Further Setup](#further-setup)
     - [Install on Windows (experimental)](#install-on-windows-experimental)
-  - [Technical Details](#technical-details)
+  - [Technical Details about MatterGen](#technical-details-about-mattergen)
   - [Manual](#manual)
   - [License](#license)
 
@@ -28,7 +28,7 @@ MatterGen-App is a Tkinter-based interface for running MatterGen tasks, develope
 
 #### Install required pre-packages (Debian)
 
-Install the newest version of ``Python`` environment:
+Install the newest version of `Python` environment:
 
 ```bash
 sudo apt-get install python3 python3-tk pip
@@ -36,7 +36,7 @@ sudo apt-get install python3 python3-tk pip
 
 #### Install MatterGen (Debian)
 
-Download ``MatterGen`` version 1.0.3:
+Download `MatterGen` version 1.0.3:
 
 ```bash
 wget https://github.com/microsoft/mattergen/archive/refs/tags/v1.0.3.zip
@@ -48,7 +48,7 @@ Unzip the file:
 unzip v1.0.3.zip
 ```
 
-Install ``uv`` package manager:
+Install `uv` package manager:
 
 ```bash
 curl -Ls https://astral.sh/uv/install.sh -o install.sh
@@ -57,8 +57,8 @@ echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
 source ~/.bashrc
 ```
 
-Inside the ``mattergen-1.0.3`` folder create a virtual Python 3.10 environment
-to install ``MatterGen``:
+Inside the `mattergen-1.0.3` folder create a virtual Python 3.10 environment
+to install `MatterGen`:
 
 ```bash
 uv venv .venv --python 3.10
@@ -66,16 +66,16 @@ source .venv/bin/activate
 uv pip install -e .
 ```
 
-You have to install an older version of ``setuptools``, otherwise execution fails:
+You have to install an older version of `setuptools`, otherwise execution fails:
 
 ```bash
 uv pip install --force-reinstall --no-cache-dir setuptools==75.8.0
 ```
 
-### Install on Windows with WSL (recommended)
+### Install on Windows with WSL
 
 Certain preparations must be made when installing on Windows compared to Linux.
-You need WSL (Windows Subsystem for Linux) in order to run properly. Please refer to this [link](https://learn.microsoft.com/en-us/windows/wsl/install).
+You need WSL (Windows Subsystem for Linux) in order to run properly. Please refer to the [Windows Subsystem for Linux installation guide](https://learn.microsoft.com/en-us/windows/wsl/install) for more information.
 
 #### WSL setup
 
@@ -107,14 +107,14 @@ wsl -d Debian
 
 Install [VSCode](https://code.visualstudio.com/) and the [Remote Development](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.vscode-remote-extensionpack) extension.
 
-On WSL update the distro using and install ``wget`` and ``ca-certificates``:
+On WSL update the distro using and install `wget` and `ca-certificates`:
 
 ```bash
 sudo apt-get update
 sudo apt-get install wget ca-certificates
 ```
 
-Run ``. code`` to open a session in VSCode.
+Run `. code` to open a session in VSCode.
 
 _Info: You can access the entire filesystem of your distro in VSCode from Windows without the need of a command line using this approach._
 
@@ -122,29 +122,29 @@ Refer to the [Microsoft Windows Subsystem Setup Documentation](https://learn.mic
 
 #### Setup Git on WSL (Debian)
 
-On WSL install ``git`` using:
+On WSL install `git` using:
 
 ```bash
 sudo apt-get install git
 ```
 
-Setup ``git``:
+Configure user name and email address in `git`:
 
 ```bash
-git config --global user.name "Your Name
-git config --global user.email "youremail@domain.com
+git config --global user.name "Your Name"
+git config --global user.email "youremail@domain.com"
 ```
 
-In the command palette in VSCode which can be accessed using ``Ctrl+Shift+P`` clone the git repository
-using the command ``Git: Clone`` and provide following URL:
+In the command palette in VSCode which can be accessed using `Ctrl+Shift+P` clone the git repository
+using the command `Git: Clone` and provide following URL:
 
 ```bash
 https://github.com/kerimyalcin95/mattergen-app.git
 ```
 
-#### Further setup
+#### Further Setup
 
-Please refer [Install on Linux (Debian)](#install-on-linux-debian) for further setup.
+After initial setup the corresponding packages have to be installed. Please refer to the section [Install on Linux (Debian)](#install-on-linux-debian) for further setup.
 
 ### Install on Windows (experimental)
 
@@ -160,34 +160,48 @@ Inside following must be selected:
 
 Download MatterGen v1.0.3 [source code](https://github.com/microsoft/mattergen/archive/refs/tags/v1.0.3.zip) and extract it.
 
-Install ``uv`` package manager:
+Install `uv` package manager:
 
-``pip install uv``
+```bash
+pip install uv
+```
 
 Inside the repository create an environment for Python 3.10:
 
-``uv venv .venv --python 3.10``
+```bash
+uv venv .venv --python 3.10
+```
 
 Activate the environment:
 
-``.\.venv\Scripts\activate``
+```bash
+.\.venv\Scripts\activate
+```
 
-Pre-Packages must be installed before installing ``mattergen``:
+Pre-Packages must be installed before installing `mattergen`:
 
-``uv pip install torch numpy cython mattersim=1.1.2``
+```bash
+uv pip install torch numpy cython mattersim=1.1.2
+```
 
-Install ``mattergen``:
+Install `mattergen`:
 
-``uv pip install -e . --no-build-isolation``
+```bash
+uv pip install -e . --no-build-isolation
+```
 
-Create a folder named ``tmp`` in ``C:\``
+Create a folder named `tmp` in `C:\`
 
-_Info: ``MatterGen`` is developed to run on Linux, so a ``tmp`` folder is required, otherwise it fails when saving the generated ``.cif`` files to disk. This folder location cannot be changed with ``Hydra`` configuration files, as the path is hardcoded._
+```powershell
+New-Item -Path "C:\tmp" -ItemType Directory
+```
 
-_Info: It is not recommended using this approach because ``MatterGen`` paths are only optimized for Linux
-distros. Please setup in Linux directly or via virtualization on Windows using WSL (Windows Subsystem for Linux)_
+_Info: `MatterGen` is developed to run on Linux, so a `tmp` folder is required, otherwise it fails when saving the generated `.cif` files to disk. This folder location cannot be changed with `Hydra` configuration files, as the path is hardcoded._
 
-## Technical Details  
+_Info: It is not recommended using this approach because `MatterGen` paths are only optimized for Linux
+distros. Please setup in Linux directly or via virtualization on Windows using WSL (Windows Subsystem for Linux)._
+
+## Technical Details about MatterGen
 
 ## Manual  
 
