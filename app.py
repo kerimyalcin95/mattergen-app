@@ -73,12 +73,16 @@ class App:
 
         if sys.platform == "win32":
         # experimental
+            print("Running on Windows (experimental)")
             main_windows()
         elif sys.platform == "linux":
             print("Running on Linux distribution.")
+            self.main_linux()
         else:
             print("Current platform: " + sys.platform)
             print("OS not supported.")
+
+    def main_linux(self):
 
         def validate_positive_int(value):
             return value.isdigit() or value == ""

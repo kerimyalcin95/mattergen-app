@@ -5,8 +5,6 @@ import json
 
 
 def main_windows():
-    print("Running on Windows (experimental)")
-
     ps = subprocess.Popen(
     ["powershell", "-NoExit"],
     stdin=subprocess.PIPE,
