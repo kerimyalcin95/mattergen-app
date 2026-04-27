@@ -5,18 +5,24 @@ from tkinter import filedialog
 import threading
 import subprocess
 import sys
+
 from pathlib import Path
 import json
 
 class App:
+    """MatterGen-App"""
 
     def __init__(self):
         self.root = None
-        self.config = None
-        self.generate_command = None
-        self.BASE_DIR = None
-        self.CONFIG_PATH = None
 
+        self.base_dir = None
+        self.config_path = None
+        self.config = None
+
+        # command for the mattergen-generate script
+        self.generate_command = None
+
+        # tk string variables
         self.tkVar_work_path = None
         self.tkVar_result_path = None
         self.tkVar_options_selected_model = None
@@ -24,6 +30,7 @@ class App:
         self.tkVar_num_batches = None
         self.tkVar_batch_size = None
 
+        # tk elements
         self.tkLabel_work_path = None
         self.tkButton_work_path = None
         self.tkEntry_work_path = None
@@ -42,6 +49,7 @@ class App:
         self.tkButton_Run = None
         self.tkButton_Stop = None
 
+        # tk arrays
         self.tkLabelArray_property = []
         self.tkEntryArray_property = []
         self.tkVarArray_property = []
@@ -54,7 +62,11 @@ class App:
         self.thread = None
 
     def run(self):
+        """
+        Entry point of the app.
+        """
 
+        # check which os is running
         if sys.platform == "win32":
             # experimental (seems to work just fine)
             print("Running on Windows (experimental)")
@@ -67,15 +79,17 @@ class App:
             print("OS not supported.")
 
     def main(self):
+        """main entry"""
 
-        # Load config file
-        self.BASE_DIR = Path(__file__).resolve().parent 
-        self.CONFIG_PATH = self.BASE_DIR.parent / "mattergen-app" / "config.json"
+        # set path of the configuration file
+        self.base_dir = Path(__file__).resolve().parent 
+        self.config_path = self.base_dir.parent / "mattergen-app" / "config.json"
 
-        with open(self.CONFIG_PATH, "r") as f:
+        # load config file
+        with open(self.config_path, "r") as f:
             self.config = json.load(f)
 
-        # Initialize window geometry
+        # initialize window geometry
         self.root = tk.Tk()
         self.root.title("MatterGen-App")
         self.root.geometry(self.config["app-geometry"])
@@ -89,6 +103,7 @@ class App:
             except ValueError:
                 return False
         
+        # gui elements: work path
         self.tkVar_work_path = tk.StringVar()
         self.tkVar_work_path.set(self.config["work-path"])
         self.tkLabel_work_path = tk.Label(self.root, text="Path of the work directory:", anchor="w")
@@ -104,7 +119,7 @@ class App:
         self.tkButton_work_path.config(command=self.tkButton_work_path_command)
         self.tkButton_work_path.pack(fill="x", padx=10, pady=(0,0))
 
-
+        # gui elements: result path
         self.tkVar_result_path = tk.StringVar()
         self.tkVar_result_path.set(self.config["result-path"])
         self.tkLabel_result_path = tk.Label(self.root, text="Path of the result directory:", anchor="w")
@@ -120,6 +135,7 @@ class App:
         self.tkButton_result_path.config(command=self.tkButton_result_path_command)
         self.tkButton_result_path.pack(fill="x", padx=10, pady=(0,0))
 
+        # gui elements: internal available models
         self.tkLabel_internal_models = tk.Label(self.root, text="Available internal models:", anchor="w")
         self.tkLabel_internal_models.pack(fill="x", padx=10, pady=(30, 0))
 
@@ -135,7 +151,7 @@ class App:
         self.tkDropDownMenu_internalModels.pack(fill="x", padx=10, pady=(0,10))
         self.tkDropDownMenu_internalModels.bind("<<ComboboxSelected>>", self.tkDropDownMenu_internalModels_on_select)
 
-        # Properties to conditions on
+        # gui elements: properties to condition on
         self.tkLabel_diffusion_guidance_factor = tk.Label(self.root, text="diffusion_guidance_factor:", anchor="w")
 
         self.tkVar_diffusion_guidance_factor = tk.StringVar()
@@ -155,7 +171,7 @@ class App:
         self.update_diffusion_guidance_factor_gui_visibility()
         self.update_properties_to_condition_on_gui_visibility()
 
-        # Basic sampling parameters
+        # gui elements: basic sampling parameters
         self.tkLabel_num_batches = tk.Label(self.root, text="Number of batches:", anchor="w")
         self.tkLabel_num_batches.pack(fill="x", padx=10, pady=(0,0))
 
@@ -187,7 +203,7 @@ class App:
         self.tkEntry_batch_size.bind("<KeyRelease>", self.tkEntry_batch_size_on_keyrelease)
         self.tkEntry_batch_size.pack(fill="x", padx=10, pady=(0,10))
 
-        # Run/Start buttons
+        # gui elements: run/start process
         self.tkLabel_Process = tk.Label(self.root, text="Run/Stop the process:", anchor="w")
         self.tkLabel_Process.pack(fill="x", padx=10, pady=(30,5))
 
@@ -199,28 +215,37 @@ class App:
         self.tkButton_Stop.config(command=self.stop_shell_process)
         self.tkButton_Stop.pack(fill="x", padx=10, pady=(5,10))
 
-
+        # configure and run app procedure
         self.root.protocol("WM_DELETE_WINDOW", self.on_close)
         self.root.mainloop()
 
     def save_config(self):
-        with open(self.CONFIG_PATH, "w", encoding="utf-8") as f:
+        """save the config.json file
+        """
+        with open(self.config_path, "w", encoding="utf-8") as f:
             json.dump(self.config, f, indent=4)
 
     def create_command(self):
-
+        """create the command string for the mattergen-generate script cli
+        """
         if sys.platform == "win32":
-            # experimental (seems to work just fine)
+            # mattergen-generate.exe has to be called directly from the environment
             self.generate_command = f"""cd "{self.config["work-path"]}"; .venv/Scripts/mattergen-generate.exe"""
             self.generate_command += f""" mattergen-generate --result-path="{self.config["result-path"]}" """
         elif sys.platform == "linux":
             self.generate_command = f"""source "{'' if self.config["work-path"]=='/' else self.config["work-path"] }/.venv/bin/activate" && """
             self.generate_command += f"""mattergen-generate --result-path="{self.config["result-path"]}" """
 
+        # command parameter: internal model
         self.generate_command += f"""--pretrained-name={self.config["internal-model-selected"]} """
+
+        # command parameter: batch size
         self.generate_command += f"""--batch_size={self.config["batch-size"]} """
+
+        # command parameter: number of batches
         self.generate_command += f"""--num_batches={self.config["num-batches"]} """
 
+        # command parameter: models to condition on
         if self.has_avail_model_properties:
 
             def is_number(s: str) -> bool:
@@ -234,6 +259,7 @@ class App:
             self.generate_command += f"""--properties_to_condition_on="""
             self.generate_command += "\"{"
 
+            # format: {"property1":"value1","property2":"value1", ... }
             for i in range(self.number_of_avail_model_properties):
                 if i > 0:
                     self.generate_command += ","
@@ -248,18 +274,26 @@ class App:
 
         print(self.generate_command)
 
-    # Run mattergen CLI prompt
     def run_shell_process(self, command: str):
-        #self.process = subprocess.run(["bash", "-c", command])
+        """run the shell process
 
+        Args:
+            command (str): command to run on the corresponding shell
+        """
+
+        # run a process and invoke the command in powershell
         if sys.platform == "win32":
             self.process = subprocess.Popen(["powershell", "-c", command])
+
+        # run a process and invoke the command in bash
         elif sys.platform == "linux":
             self.process = subprocess.Popen(["bash", "-c", command])
-        
 
     def stop_shell_process(self):
+        """stop the shell process
+        """
 
+        # kill the subprocess
         if sys.platform == "win32":
             if self.process and self.process.poll() is None:
                 try:
@@ -279,6 +313,8 @@ class App:
                 print("No process running.")
 
     def start_thread(self):
+        """start a thread and run the shell process
+        """
         if self.process and self.process.poll() is None:
             print("Process already running.")
         else:
@@ -291,13 +327,17 @@ class App:
             )
             self.thread.start()
 
-    # Safe window geometry (size, position) and kill the app
     def on_close(self):
+        """protocol to apply when app window closes
+        """
+
+        # save window position and size of the app
         self.config["app-geometry"] = self.root.geometry()
         self.save_config()
 
         print("Exiting app.")
 
+        # kill the process if running
         if sys.platform == "win32":
             if self.process and self.process.poll() is None:
                 try:
@@ -315,6 +355,14 @@ class App:
         self.root.destroy()
 
     def update_available_number_of_model_properties(self):
+        """update the available number of properties from each model in the config.json file
+                Example:    "chemical_system": ["chemical_system"]  -> 1 property
+                            "dft_mag_density_hhi_score": [
+                                "dft_mag_density",
+                                "hhi_score"
+                            ]                                       -> 2 properties
+
+        """
         self.number_of_avail_model_properties = len(self.config["model-conditions"][self.tkVar_selected_model.get()])
 
         if self.number_of_avail_model_properties > 0:
@@ -323,6 +371,11 @@ class App:
             self.has_avail_model_properties = False
 
     def update_properties_to_condition_on_gui_visibility(self):
+        """toggle gui elements depending on current chosen model in the drop down menu
+        and how many properties to condition on the model.
+        """
+
+        # destroy tk arrays
         for w in self.tkLabelArray_property:
             w.destroy()
         self.tkLabelArray_property.clear()
@@ -332,6 +385,7 @@ class App:
         self.tkEntryArray_property.clear()
         self.tkVarArray_property.clear()
 
+        # create tk elements and pack them in the right order and layout
         if self.has_avail_model_properties:
             self.properties = self.config["model-conditions"][self.tkVar_selected_model.get()]
 
@@ -350,14 +404,18 @@ class App:
                 ))
                 self.tkEntryArray_property[i].bind("<KeyRelease>", self.tkEntryArray_property_on_keyrelease)
 
+            # pack first element to the tk diffusion_guidance_factor element
             self.tkLabelArray_property[0].pack(after=self.tkEntry_diffusion_guidance_factor, fill="x", padx=10, pady=(5,0))
             self.tkEntryArray_property[0].pack(after=self.tkLabelArray_property[0], fill="x", padx=10, pady=(0,10))
 
+            # pack all other elements after that
             for i in range(self.number_of_avail_model_properties-1):
                 self.tkLabelArray_property[i+1].pack(after=self.tkEntryArray_property[i], fill="x", padx=10, pady=(5,0))
                 self.tkEntryArray_property[i+1].pack(after=self.tkLabelArray_property[i+1], fill="x", padx=10, pady=(0,10))
 
     def update_diffusion_guidance_factor_gui_visibility(self):
+        """toggle diffusion_guidance_factor tk element depending on the chosen model from the dropdown menu
+        """
         if self.has_avail_model_properties:
             self.tkLabel_diffusion_guidance_factor.pack(after=self.tkDropDownMenu_internalModels, fill="x", padx=10, pady=(5,0))
             self.tkEntry_diffusion_guidance_factor.pack(after=self.tkLabel_diffusion_guidance_factor, fill="x", padx=10, pady=(0,10))
@@ -365,20 +423,34 @@ class App:
             self.tkLabel_diffusion_guidance_factor.pack_forget()
             self.tkEntry_diffusion_guidance_factor.pack_forget()
 
-
     def tkDropDownMenu_internalModels_on_select(self, event):
+        """dropdown menu event handler: on select
+
+        Args:
+            event (Any): event triggered on select
+        """
+        # set and save config
         self.config["internal-model-selected"] = self.tkVar_selected_model.get()
         self.save_config()
 
+        # display properties to condition on depending on chosen model
         self.update_available_number_of_model_properties()
         self.update_diffusion_guidance_factor_gui_visibility()
         self.update_properties_to_condition_on_gui_visibility()
 
     def tkEntry_work_path_on_keyrelease(self, event):
+        """work path entry field event handler: on keyrelease
+
+        Args:
+            event (Any): event triggered on keyrelease
+        """
+        # set and save config
         self.config["work-path"] = self.tkVar_work_path.get()
         self.save_config()
 
     def tkButton_work_path_command(self, *args):
+        """command for pressing the button to choose the work path
+        """
         path = filedialog.askdirectory()
         if path:  
             self.tkVar_work_path.set(path)
@@ -389,10 +461,17 @@ class App:
         self.save_config()
 
     def tkEntry_result_path_on_keyrelease(self, event):
+        """result path entry field event handler: on keyrelease
+
+        Args:
+            event (Any): event triggered on keyrelease
+        """
         self.config["result-path"] = self.tkVar_result_path.get()
         self.save_config()
 
     def tkButton_result_path_command(self, *args):
+        """command for pressing the button to choose the result path
+        """
         path = filedialog.askdirectory()
         if path:  
             self.tkVar_result_path.set(path)
@@ -403,56 +482,85 @@ class App:
         self.save_config()
 
     def tkEntry_diffusion_guidance_factor_on_keyrelease(self, event):
+        """diffusion_guidance_factor entry field event handler: on keyrelease
+
+        Args:
+            event (Any): event triggered on keyrelease
+        """
         self.save_config()
 
     def tkEntry_diffusion_guidance_factor_callback(self, *args):
-            value = self.tkVar_diffusion_guidance_factor.get()
+        """diffusion_guidance_factor callback for input validation
+        """
+        value = self.tkVar_diffusion_guidance_factor.get()
 
-            try: 
-                if float(value) > 0:
-                    self.config["diffusion_guidance_factor"] = float(value)
-            except ValueError:
-                self.config["diffusion_guidance_factor"] = 1.0
+        try: 
+            if float(value) > 0:
+                self.config["diffusion_guidance_factor"] = float(value)
+        except ValueError:
+            self.config["diffusion_guidance_factor"] = 1.0
 
-            self.save_config
+        self.save_config
 
     def tkEntryArray_property_callback(self, i, *args):
+        """property array callback for input validation
+        """
         self.config[self.properties[i]] = self.tkVarArray_property[i].get()
         self.save_config()
 
     def tkEntryArray_property_on_keyrelease(self, event):
+        """property array entry field event handler: on keyrelease
+
+        Args:
+            event (Any): event triggered on keyrelease
+        """
         self.save_config()
 
     def tkEntry_num_batches_on_keyrelease(self, event):
+        """number of batches entry field event handler: on keyrelease
+
+        Args:
+            event (Any): event triggered on keyrelease
+        """
         self.save_config()
 
     def tkEntry_num_batches_callback(self, *args):
-            value = self.tkVar_num_batches.get()
+        """number of batches entry callback for input validation
+        """
+        value = self.tkVar_num_batches.get()
 
-            if value.isdigit():
-                self.config["num-batches"] = int(value)
-                if int(value) == 0:
-                    self.config["num-batches"] = 1
-            else:
+        if value.isdigit():
+            self.config["num-batches"] = int(value)
+            if int(value) == 0:
                 self.config["num-batches"] = 1
+        else:
+            self.config["num-batches"] = 1
 
-            self.save_config
+        self.save_config
 
     def tkEntry_batch_size_on_keyrelease(self, event):
+        """batch size entry field event handler: on keyrelease
+
+        Args:
+            event (Any): event triggered on keyrelease
+        """
         self.save_config()
 
     def tkEntry_batch_size_callback(self, *args):
-            value = self.tkVar_batch_size.get()
+        """batch size entry callback for input validation
+        """
+        value = self.tkVar_batch_size.get()
 
-            if value.isdigit():
-                self.config["batch-size"] = int(value)
-                if int(value) == 0:
-                    self.config["batch-size"] = 1
-            else:
+        if value.isdigit():
+            self.config["batch-size"] = int(value)
+            if int(value) == 0:
                 self.config["batch-size"] = 1
+        else:
+            self.config["batch-size"] = 1
 
-            self.save_config
+        self.save_config
 
+# app entry point
 if __name__ == "__main__":
     app = App()
     app.run()
