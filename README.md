@@ -14,8 +14,8 @@ MatterGen-App is a Tkinter-based interface for running MatterGen tasks, develope
       - [Install MatterGen (Debian)](#install-mattergen-debian)
     - [Install on Windows with WSL](#install-on-windows-with-wsl)
       - [WSL setup](#wsl-setup)
-      - [Setup VSCode on WSL (Debian)](#setup-vscode-on-wsl-debian)
-      - [Setup Git on WSL (Debian)](#setup-git-on-wsl-debian)
+      - [VSCode Setup (Debian)](#vscode-setup-debian)
+      - [Git Setup (Debian)](#git-setup-debian)
       - [Further Setup](#further-setup)
     - [Install on Windows (experimental)](#install-on-windows-experimental)
   - [Technical Details about MatterGen](#technical-details-about-mattergen)
@@ -103,7 +103,7 @@ After installing start WSL using:
 wsl -d Debian
 ```
 
-#### Setup VSCode on WSL (Debian)
+#### VSCode Setup (Debian)
 
 Install [VSCode](https://code.visualstudio.com/) and the [Remote Development](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.vscode-remote-extensionpack) extension.
 
@@ -120,7 +120,7 @@ _Info: You can access the entire filesystem of your distro in VSCode from Window
 
 Refer to the [Microsoft Windows Subsystem Setup Documentation](https://learn.microsoft.com/en-us/windows/wsl/tutorials/wsl-vscode) for more details.
 
-#### Setup Git on WSL (Debian)
+#### Git Setup (Debian)
 
 On WSL install `git` using:
 
