@@ -2,6 +2,8 @@
 
 MatterGen-App is a Tkinter-based interface for running MatterGen tasks, developed as a study project at Munich University of Applied Sciences to implement input configuration, execution control, and result display.
 
+The app supports Windows (experimental) and Linux.
+
 ![v1.0.0-beta1](assets/v1.0.0.beta1.png)
 
 ## Table of Contents
@@ -165,8 +167,6 @@ After initial setup the corresponding packages have to be installed. Please refe
 
 ### Install on Windows (experimental)
 
-_Warning: `MatterGen-App` does not run on Windows natively. The code that is designed to run on Linux has to be ported into the `app_windows.py` file._
-
 Download and install [C++ Build tools](https://aka.ms/vs/stable/vs_BuildTools.exe) and select _Desktop development with C++_.
 
 Inside following must be selected:
@@ -217,9 +217,6 @@ New-Item -Path "C:\tmp" -ItemType Directory
 
 _Info: `MatterGen` is developed to run on Linux, so a `tmp` folder is required, otherwise it fails when saving the generated `.cif` files to disk. This folder location cannot be changed with `Hydra` configuration files, as the path is hardcoded._
 
-_Info: It is not recommended using this approach because `MatterGen` paths are only optimized for Linux
-distros. Please setup in Linux directly or via virtualization on Windows using WSL (Windows Subsystem for Linux)._
-
 ## Run the App
 
 ### Linux (Debian)
@@ -245,7 +242,7 @@ python app.py
 The `MatterGen` app saves configuration, size and position of the app automatically without the intervention
 of the user. Reopening the app restores configuration. After configuring the app and starting a process the app
 the commands are run using the system CLI (_command line interface_). An internet connection is required to 
-download the models from `huggingface`.
+download the models from `Huggingface`.
 
 _Warning: The app has to be started inside a terminal otherwise execution of the app will fail._
 
