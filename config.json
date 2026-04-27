@@ -16,7 +16,7 @@
         "dft_mag_density_hhi_score",
         "chemical_system_energy_above_hull"
     ],
-    "internal-model-selected": "space_group",
+    "internal-model-selected": "mattergen_base",
     "dft_mag_density": "1",
     "dft_bulk_modulus": 200,
     "dft_shear_modulus": 50,

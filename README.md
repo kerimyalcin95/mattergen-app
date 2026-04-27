@@ -8,89 +8,145 @@ MatterGen-App is a Tkinter-based interface for running MatterGen tasks, develope
 
 - [MatterGen-App](#mattergen-app)
   - [Table of Contents](#table-of-contents)
-  - [Install on Windows with WSL (recommended)](#install-on-windows-with-wsl-recommended)
-    - [WSL setup](#wsl-setup)
-    - [Setup VSCode on WSL (Debian)](#setup-vscode-on-wsl-debian)
-    - [Setup Git on WSL (Debian)](#setup-git-on-wsl-debian)
-    - [Install required pre-packages (Debian)](#install-required-pre-packages-debian)
-    - [Install MatterGen (Debian)](#install-mattergen-debian)
-  - [Install on Windows (experimental)](#install-on-windows-experimental)
+  - [Installation](#installation)
+    - [Install on Linux (Debian)](#install-on-linux-debian)
+      - [Install required pre-packages (Debian)](#install-required-pre-packages-debian)
+      - [Install MatterGen (Debian)](#install-mattergen-debian)
+    - [Install on Windows with WSL (recommended)](#install-on-windows-with-wsl-recommended)
+      - [WSL setup](#wsl-setup)
+      - [Setup VSCode on WSL (Debian)](#setup-vscode-on-wsl-debian)
+      - [Setup Git on WSL (Debian)](#setup-git-on-wsl-debian)
+      - [Further setup](#further-setup)
+    - [Install on Windows (experimental)](#install-on-windows-experimental)
+  - [Technical Details](#technical-details)
+  - [Manual](#manual)
+  - [License](#license)
 
-## Install on Windows with WSL (recommended)
+## Installation
+
+### Install on Linux (Debian)
+
+#### Install required pre-packages (Debian)
+
+Install the newest version of ``Python`` environment:
+
+```bash
+sudo apt-get install python3 python3-tk pip
+```
+
+#### Install MatterGen (Debian)
+
+Download ``MatterGen`` version 1.0.3:
+
+```bash
+wget https://github.com/microsoft/mattergen/archive/refs/tags/v1.0.3.zip
+```
+
+Unzip the file:
+
+```bash
+unzip v1.0.3.zip
+```
+
+Install ``uv`` package manager:
+
+```bash
+curl -Ls https://astral.sh/uv/install.sh -o install.sh
+sh install.sh
+echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
+source ~/.bashrc
+```
+
+Inside the ``mattergen-1.0.3`` folder create a virtual Python 3.10 environment
+to install ``MatterGen``:
+
+```bash
+uv venv .venv --python 3.10
+source .venv/bin/activate
+uv pip install -e .
+```
+
+You have to install an older version of ``setuptools``, otherwise execution fails:
+
+```bash
+uv pip install --force-reinstall --no-cache-dir setuptools==75.8.0
+```
+
+### Install on Windows with WSL (recommended)
 
 Certain preparations must be made when installing on Windows compared to Linux.
 You need WSL (Windows Subsystem for Linux) in order to run properly. Please refer to this [link](https://learn.microsoft.com/en-us/windows/wsl/install).
 
-### WSL setup
+#### WSL setup
 
-You can install WSL using:  
-``wsl --install``
+You can install WSL using:
 
-After rebooting the system list the available distros you can choose from:  
-``wsl --list --online``
+```bash
+wsl --install
+```
 
-Install a preferred Linux distro (e.g. Debian):  
-``wsl --install Debian``
+After rebooting the system list the available distros you can choose from:
 
-After installing start WSL using:  
-``wsl -d Debian``
+```bash
+wsl --list --online
+```
 
-### Setup VSCode on WSL (Debian)
+Install a preferred Linux distro (e.g. Debian):
+
+```bash
+wsl --install Debian
+```
+
+After installing start WSL using:
+
+```bash
+wsl -d Debian
+```
+
+#### Setup VSCode on WSL (Debian)
 
 Install [VSCode](https://code.visualstudio.com/) and the [Remote Development](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.vscode-remote-extensionpack) extension.
 
-On WSL update the distro using and install ``wget`` and ``ca-certificates``:  
-``sudo apt-get update``  
-``sudo apt-get install wget ca-certificates``
+On WSL update the distro using and install ``wget`` and ``ca-certificates``:
+
+```bash
+sudo apt-get update
+sudo apt-get install wget ca-certificates
+```
 
 Run ``. code`` to open a session in VSCode.
 
 _Info: You can access the entire filesystem of your distro in VSCode from Windows without the need of a command line using this approach._
 
-Refer to this [link](https://learn.microsoft.com/en-us/windows/wsl/tutorials/wsl-vscode) for more details about how to create a setup with VSCode on WSL.
+Refer to the [Microsoft Windows Subsystem Setup Documentation](https://learn.microsoft.com/en-us/windows/wsl/tutorials/wsl-vscode) for more details.
 
-### Setup Git on WSL (Debian)
+#### Setup Git on WSL (Debian)
 
-On WSL install ``git`` using:  
-``sudo apt-get install git``
+On WSL install ``git`` using:
 
-Setup ``git``:  
-``git config --global user.name "Your Name"``  
-``git config --global user.email "youremail@domain.com"``
+```bash
+sudo apt-get install git
+```
+
+Setup ``git``:
+
+```bash
+git config --global user.name "Your Name
+git config --global user.email "youremail@domain.com
+```
 
 In the command palette in VSCode which can be accessed using ``Ctrl+Shift+P`` clone the git repository
-using the command ``Git: Clone`` and provide following URL:  
-``https://github.com/kerimyalcin95/mattergen-app.git``
+using the command ``Git: Clone`` and provide following URL:
 
-### Install required pre-packages (Debian)
+```bash
+https://github.com/kerimyalcin95/mattergen-app.git
+```
 
-Install the newest version of ``Python`` environment:  
-``sudo apt-get install python3 python3-tk pip``
+#### Further setup
 
-### Install MatterGen (Debian)
+Please refer [Install on Linux (Debian)](#install-on-linux-debian) for further setup.
 
-Download ``MatterGen`` version 1.0.3:  
-``wget https://github.com/microsoft/mattergen/archive/refs/tags/v1.0.3.zip``
-
-Unzip the file:  
-``unzip v1.0.3.zip``
-
-Install ``uv`` package manager:  
-``curl -Ls https://astral.sh/uv/install.sh -o install.sh``  
-``sh install.sh``  
-``echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc``  
-``source ~/.bashrc``  
-
-Inside the ``mattergen-1.0.3`` folder create a virtual Python 3.10 environment
-to install ``MatterGen``:  
-``uv venv .venv --python 3.10``  
-``source .venv/bin/activate``  
-``uv pip install -e .``  
-
-You have to install an older version of ``setuptools``, otherwise execution fails:  
-``uv pip install --force-reinstall --no-cache-dir setuptools==75.8.0``
-
-## Install on Windows (experimental)
+### Install on Windows (experimental)
 
 Download and install [C++ Build tools](https://aka.ms/vs/stable/vs_BuildTools.exe) and select _Desktop development with C++_.
 
@@ -130,3 +186,11 @@ _Info: ``MatterGen`` is developed to run on Linux, so a ``tmp`` folder is requir
 
 _Info: It is not recommended using this approach because ``MatterGen`` paths are only optimized for Linux
 distros. Please setup in Linux directly or via virtualization on Windows using WSL (Windows Subsystem for Linux)_
+
+## Technical Details  
+
+## Manual  
+
+## License  
+
+This project is licensed under the [MIT License](LICENSE).
