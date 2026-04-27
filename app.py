@@ -105,7 +105,12 @@ class App:
         
         # gui elements: work path
         self.tkVar_work_path = tk.StringVar()
-        self.tkVar_work_path.set(self.config["work-path"])
+
+        if sys.platform == "win32":
+            self.tkVar_work_path.set(self.config["work-path-windows"])
+        elif sys.platform == "linux":
+            self.tkVar_work_path.set(self.config["work-path-linux"])
+        
         self.tkLabel_work_path = tk.Label(self.root, text="Path of the work directory:", anchor="w")
         self.tkLabel_work_path.pack(fill="x", padx=10, pady=(30, 0))
 
@@ -121,7 +126,12 @@ class App:
 
         # gui elements: result path
         self.tkVar_result_path = tk.StringVar()
-        self.tkVar_result_path.set(self.config["result-path"])
+
+        if sys.platform == "win32":
+            self.tkVar_result_path.set(self.config["result-path-windows"])
+        elif sys.platform == "linux":
+            self.tkVar_result_path.set(self.config["result-path-linux"])
+
         self.tkLabel_result_path = tk.Label(self.root, text="Path of the result directory:", anchor="w")
         self.tkLabel_result_path.pack(fill="x", padx=10, pady=(10, 0))
 
@@ -230,11 +240,11 @@ class App:
         """
         if sys.platform == "win32":
             # mattergen-generate.exe has to be called directly from the environment
-            self.generate_command = f"""cd "{self.config["work-path"]}"; .venv/Scripts/mattergen-generate.exe"""
-            self.generate_command += f""" mattergen-generate --result-path="{self.config["result-path"]}" """
+            self.generate_command = f"""cd "{self.config["work-path-windows"]}"; .venv/Scripts/mattergen-generate.exe"""
+            self.generate_command += f""" mattergen-generate --output-path="{self.config["result-path-windows"]}" """
         elif sys.platform == "linux":
-            self.generate_command = f"""source "{'' if self.config["work-path"]=='/' else self.config["work-path"] }/.venv/bin/activate" && """
-            self.generate_command += f"""mattergen-generate --result-path="{self.config["result-path"]}" """
+            self.generate_command = f"""source "{'' if self.config["work-path-linux"]=='/' else self.config["work-path-linux"] }/.venv/bin/activate" && """
+            self.generate_command += f"""mattergen-generate --output-path="{self.config["result-path-linux"]}" """
 
         # command parameter: internal model
         self.generate_command += f"""--pretrained-name={self.config["internal-model-selected"]} """
@@ -445,7 +455,11 @@ class App:
             event (Any): event triggered on keyrelease
         """
         # set and save config
-        self.config["work-path"] = self.tkVar_work_path.get()
+        if sys.platform == "win32":
+            self.config["work-path-windows"] = self.tkVar_work_path.get()
+        elif sys.platform == "linux":
+            self.config["work-path-linux"] = self.tkVar_work_path.get()
+
         self.save_config()
 
     def tkButton_work_path_command(self, *args):
@@ -457,7 +471,11 @@ class App:
         else:
             self.tkVar_work_path.set("/tmp")
         
-        self.config["work-path"] = self.tkVar_work_path.get()
+        if sys.platform == "win32":
+            self.config["work-path-windows"] = self.tkVar_work_path.get()
+        elif sys.platform == "linux":
+            self.config["work-path-linux"] = self.tkVar_work_path.get()
+
         self.save_config()
 
     def tkEntry_result_path_on_keyrelease(self, event):
@@ -466,7 +484,11 @@ class App:
         Args:
             event (Any): event triggered on keyrelease
         """
-        self.config["result-path"] = self.tkVar_result_path.get()
+        if sys.platform == "win32":
+            self.config["result-path-windows"] = self.tkVar_result_path.get()
+        elif sys.platform == "linux":
+            self.config["result-path-linux"] = self.tkVar_result_path.get()
+        
         self.save_config()
 
     def tkButton_result_path_command(self, *args):
@@ -478,7 +500,11 @@ class App:
         else:
             self.tkVar_result_path.set((self.tkVar_work_path.get() + "/results"))
         
-        self.config["result-path"] = self.tkVar_result_path.get()
+        if sys.platform == "win32":
+            self.config["result-path-windows"] = self.tkVar_result_path.get()
+        elif sys.platform == "linux":
+            self.config["result-path-linux"] = self.tkVar_result_path.get()
+            
         self.save_config()
 
     def tkEntry_diffusion_guidance_factor_on_keyrelease(self, event):
