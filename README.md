@@ -237,6 +237,8 @@ python app.py
 
 ## Technical Details about MatterGen
 
+TODO: This will be addressed later. Further investigation on this topic is required.
+
 ## Software Manual  
 
 The `MatterGen` app saves configuration, size and position of the app automatically without the intervention
